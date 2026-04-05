@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduLearn — Courses</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1208;
+    --paper: #faf7f2;
+    --warm: #f5ede0;
+    --accent: #d4550a;
+    --accent2: #4a7c59;
+    --accent3: #2b5faa;
+    --muted: #8a7f72;
+    --border: #e0d8ce;
+    --card: #ffffff;
+    --shadow: 0 2px 20px rgba(26,18,8,.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: #fff;
+    padding: 0 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -.02em;
+    color: #fff;
+  }
+  .logo span { color: #f7b04a; }
+  nav { display: flex; gap: 24px; align-items: center; }
+  nav a {
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .875rem;
+    font-weight: 500;
+    transition: color .2s;
+  }
+  nav a:hover { color: #fff; }
+  .nav-saved {
+    background: var(--accent);
+    color: #fff !important;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 500 !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background .2s !important;
+  }
+  .nav-saved:hover { background: #b84408 !important; }
+  #saved-count {
+    background: #fff;
+    color: var(--accent);
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: .7rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #1a1208 60%, #2e1a08 100%);
+    padding: 56px 5vw 48px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    right: 0; top: 0;
+    width: 50%; height: 100%;
+    background: radial-gradient(ellipse at 80% 50%, rgba(212,85,10,.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-label {
+    font-size: .75rem;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #f7b04a;
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    max-width: 600px;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: italic; color: #f7b04a; }
+  .hero p {
+    color: rgba(255,255,255,.65);
+    max-width: 480px;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 32px;
+  }
+  .stat { text-align: left; }
+  .stat .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: #f7b04a;
+  }
+  .stat .lbl {
+    font-size: .75rem;
+    color: rgba(255,255,255,.5);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+
+  /* ── FILTERS ── */
+  .filter-bar {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 5vw;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    position: sticky;
+    top: 64px;
+    z-index: 90;
+  }
+  .filter-label {
+    font-size: .75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+    margin-right: 6px;
+  }
+  .filter-btn {
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .8rem;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+  }
+  .search-wrap {
+    margin-left: auto;
+    position: relative;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    stroke: var(--muted);
+    fill: none;
+  }
+  #search {
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 7px 14px 7px 30px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .8rem;
+    background: var(--paper);
+    color: var(--ink);
+    width: 200px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  #search:focus { border-color: var(--accent); }
+
+  /* ── MAIN GRID ── */
+  .main {
+    padding: 32px 5vw;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .results-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .results-count {
+    font-size: .875rem;
+    color: var(--muted);
+  }
+  .results-count strong { color: var(--ink); }
+
+  .course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  /* ── COURSE CARD ── */
+  .course-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform .25s, box-shadow .25s;
+    animation: fadeUp .4s ease both;
+  }
+  .course-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(26,18,8,.12);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-banner {
+    height: 6px;
+  }
+  .card-body { padding: 20px; }
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .category-pill {
+    font-size: .7rem;
+    font-weight: 500;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 12px;
+  }
+  .save-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: var(--muted);
+    transition: color .2s, transform .2s;
+    flex-shrink: 0;
+  }
+  .save-btn:hover { color: var(--accent); transform: scale(1.15); }
+  .save-btn.saved { color: var(--accent); }
+  .save-btn svg { width: 18px; height: 18px; }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+  .card-instructor {
+    font-size: .8rem;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .card-meta {
+    display: flex;
+    gap: 14px;
+    font-size: .75rem;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .card-meta span { display: flex; align-items: center; gap: 4px; }
+  .card-meta svg { width: 12px; height: 12px; fill: currentColor; }
+
+  .card-desc {
+    font-size: .85rem;
+    color: #5a5248;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  /* modules */
+  .modules-toggle {
+    background: var(--warm);
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .82rem;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background .2s;
+    margin-bottom: 0;
+  }
+  .modules-toggle:hover { background: #eedec6; }
+  .chevron {
+    width: 14px;
+    height: 14px;
+    stroke: var(--muted);
+    fill: none;
+    transition: transform .3s;
+  }
+  .chevron.open { transform: rotate(180deg); }
+
+  .modules-list {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .35s ease;
+  }
+  .modules-list.open { max-height: 600px; }
+  .module-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    font-size: .8rem;
+    border-bottom: 1px solid var(--border);
+    color: #4a4038;
+  }
+  .module-item:last-child { border-bottom: none; }
+  .module-num {
+    font-size: .7rem;
+    font-weight: 700;
+    color: var(--muted);
+    width: 18px;
+    flex-shrink: 0;
+  }
+
+  .card-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  .price.free { color: var(--accent2); }
+  .enroll-btn {
+    padding: 9px 20px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+    background: var(--ink);
+    color: #fff;
+  }
+  .enroll-btn:hover { background: #3a2810; transform: scale(1.02); }
+  .enroll-btn.enrolled {
+    background: var(--accent2);
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,18,8,.55);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s;
+    padding: 20px;
+  }
+  .modal-overlay.show { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--card);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 460px;
+    padding: 32px;
+    transform: translateY(24px) scale(.97);
+    transition: transform .3s ease;
+    position: relative;
+  }
+  .modal-overlay.show .modal { transform: none; }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--warm);
+    border: none;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    transition: background .2s, color .2s;
+  }
+  .modal-close:hover { background: var(--border); color: var(--ink); }
+  .modal h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+  }
+  .modal-sub {
+    font-size: .82rem;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .form-row { margin-bottom: 16px; }
+  .form-row label {
+    display: block;
+    font-size: .78rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .form-row input, .form-row select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .9rem;
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .form-row input:focus, .form-row select:focus {
+    border-color: var(--accent);
+  }
+  .form-row input.error { border-color: #d44; }
+  .error-msg { font-size: .75rem; color: #d44; margin-top: 4px; display: none; }
+  .error-msg.show { display: block; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .submit-btn {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    background: var(--ink);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .95rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background .2s;
+  }
+  .submit-btn:hover { background: #3a2810; }
+
+  /* ── SAVED PANEL ── */
+  .saved-panel {
+    position: fixed;
+    top: 0; right: 0;
+    width: min(380px, 100vw);
+    height: 100vh;
+    background: var(--card);
+    box-shadow: -4px 0 30px rgba(26,18,8,.12);
+    z-index: 300;
+    transform: translateX(100%);
+    transition: transform .35s cubic-bezier(.4,0,.2,1);
+    display: flex;
+    flex-direction: column;
+  }
+  .saved-panel.open { transform: none; }
+  .panel-header {
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .panel-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+  }
+  .panel-close {
+    background: var(--warm);
+    border: none;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+  }
+  .panel-close:hover { background: var(--border); }
+  .panel-body { flex: 1; overflow-y: auto; padding: 16px 24px; }
+  .saved-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+  .saved-item-info { flex: 1; }
+  .saved-item-title { font-size: .88rem; font-weight: 500; line-height: 1.3; }
+  .saved-item-cat { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+  .remove-saved {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 1.1rem;
+    transition: color .2s;
+    padding: 4px;
+    flex-shrink: 0;
+  }
+  .remove-saved:hover { color: #d44; }
+  .panel-empty {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--muted);
+    font-size: .875rem;
+  }
+  .panel-empty span { font-size: 2rem; display: block; margin-bottom: 8px; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--ink);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 24px;
+    font-size: .85rem;
+    font-weight: 500;
+    z-index: 500;
+    transition: transform .35s cubic-bezier(.4,0,.2,1);
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── SUCCESS ── */
+  .success-screen {
+    text-align: center;
+    padding: 8px 0;
+  }
+  .success-icon {
+    width: 56px; height: 56px;
+    background: #e6f4ec;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 1.6rem;
+  }
+  .success-screen h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+  }
+  .success-screen p { font-size: .875rem; color: var(--muted); line-height: 1.5; }
+  .success-screen .submit-btn { margin-top: 24px; }
+
+  .no-results {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .no-results span { font-size: 2.5rem; display: block; margin-bottom: 12px; }
+  .no-results strong { color: var(--ink); font-family: 'Playfair Display', serif; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Edu<span>Learn</span></div>
+  <nav>
+    <a href="#">Courses</a>
+    <a href="#">Instructors</a>
+    <a href="#">Pricing</a>
+    <a href="#" class="nav-saved" id="open-saved">
+      ♡ Saved <span id="saved-count">0</span>
+    </a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">Spring 2025 Catalog</div>
+  <h1>Learn something <em>extraordinary</em> today.</h1>
+  <p>Expert-led courses across design, technology, business, and more — at your own pace.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="num">120+</div><div class="lbl">Courses</div></div>
+    <div class="stat"><div class="num">48k</div><div class="lbl">Students</div></div>
+    <div class="stat"><div class="num">4.8★</div><div class="lbl">Avg Rating</div></div>
+  </div>
+</section>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="filter-label">Filter</span>
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="design">Design</button>
+  <button class="filter-btn" data-filter="technology">Technology</button>
+  <button class="filter-btn" data-filter="business">Business</button>
+  <button class="filter-btn" data-filter="science">Science</button>
+  <button class="filter-btn" data-filter="humanities">Humanities</button>
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="search" placeholder="Search courses…">
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="results-bar">
+    <span class="results-count">Showing <strong id="count">0</strong> courses</span>
+  </div>
+  <div class="course-grid" id="course-grid"></div>
+</main>
+
+<!-- ENROLLMENT MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- SAVED PANEL -->
+<div class="saved-panel" id="saved-panel">
+  <div class="panel-header">
+    <h3>Saved Courses</h3>
+    <button class="panel-close" id="close-saved">✕</button>
+  </div>
+  <div class="panel-body" id="saved-list"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const COURSES = [
+  {
+    id: 1, category: 'design',
+    title: 'UI Design Fundamentals',
+    instructor: 'Mia Chen', duration: '12h', lessons: 32, rating: 4.9, price: 49,
+    desc: 'Master the core principles of user interface design — from typography and color theory to layout systems and component libraries.',
+    color: '#d4550a',
+    modules: ['Introduction to UI Design', 'Typography & Type Systems', 'Color Theory in Practice', 'Layout & Grid Systems', 'Component Design', 'Design Handoff']
+  },
+  {
+    id: 2, category: 'technology',
+    title: 'Python for Data Science',
+    instructor: 'Dr. Raj Patel', duration: '20h', lessons: 58, rating: 4.8, price: 69,
+    desc: 'A comprehensive journey through Python programming with a focus on data analysis, visualization, and machine learning basics.',
+    color: '#2b5faa',
+    modules: ['Python Basics & Syntax', 'Working with Pandas', 'Data Visualization with Matplotlib', 'NumPy & Statistics', 'Intro to Machine Learning', 'Capstone Project']
+  },
+  {
+    id: 3, category: 'business',
+    title: 'Marketing Strategy 101',
+    instructor: 'Elena Rivera', duration: '8h', lessons: 22, rating: 4.7, price: 39,
+    desc: 'Learn to craft compelling marketing strategies, understand consumer psychology, and build campaigns that convert.',
+    color: '#4a7c59',
+    modules: ['Marketing Fundamentals', 'Customer Personas', 'Content Marketing', 'Social Media Strategy', 'Analytics & Measurement']
+  },
+  {
+    id: 4, category: 'design',
+    title: 'Motion Design with After Effects',
+    instructor: 'Tom Nakamura', duration: '16h', lessons: 44, rating: 4.6, price: 79,
+    desc: 'Bring your designs to life. From simple animations to complex motion sequences — every frame beautifully crafted.',
+    color: '#9c3a8f',
+    modules: ['After Effects Interface', 'Keyframing Principles', 'Text Animation', 'Shape Layers & Masks', 'Compositing', 'Export & Delivery']
+  },
+  {
+    id: 5, category: 'science',
+    title: 'Introduction to Astrophysics',
+    instructor: 'Prof. Sara Kim', duration: '14h', lessons: 36, rating: 4.9, price: 0,
+    desc: 'Explore the universe from stellar formation to black holes, dark matter, and the expanding cosmos. No prerequisites.',
+    color: '#1a6080',
+    modules: ['The Solar System', 'Stars & Stellar Evolution', 'Galaxies & Cosmology', 'Black Holes', 'Dark Matter & Dark Energy', 'The Big Bang']
+  },
+  {
+    id: 6, category: 'technology',
+    title: 'Full-Stack Web Development',
+    instructor: 'Alex Morgan', duration: '30h', lessons: 82, rating: 4.8, price: 99,
+    desc: 'Build complete web applications from scratch. HTML, CSS, JavaScript, React, Node.js, and databases in one cohesive course.',
+    color: '#2b5faa',
+    modules: ['HTML & CSS Foundations', 'JavaScript Deep Dive', 'React Fundamentals', 'Node.js & Express', 'Databases & SQL', 'Deployment & DevOps']
+  },
+  {
+    id: 7, category: 'humanities',
+    title: 'Philosophy of the Modern Mind',
+    instructor: 'Dr. Laura Stein', duration: '10h', lessons: 28, rating: 4.5, price: 0,
+    desc: 'Examine consciousness, free will, ethics, and identity through the lens of contemporary philosophy and cognitive science.',
+    color: '#7a3030',
+    modules: ['What is Consciousness?', 'Free Will & Determinism', 'Personal Identity', 'Ethics in the Modern World', 'Mind & Technology']
+  },
+  {
+    id: 8, category: 'business',
+    title: 'Financial Modeling & Valuation',
+    instructor: 'James Wu', duration: '18h', lessons: 50, rating: 4.7, price: 89,
+    desc: 'Build professional-grade financial models used in investment banking, private equity, and corporate finance.',
+    color: '#4a7c59',
+    modules: ['Excel for Finance', 'Financial Statement Analysis', 'DCF Valuation', 'Comparable Company Analysis', 'LBO Modeling', 'Presentation Skills']
+  },
+  {
+    id: 9, category: 'science',
+    title: 'Molecular Biology Essentials',
+    instructor: 'Dr. Ananya Roy', duration: '12h', lessons: 34, rating: 4.6, price: 59,
+    desc: 'From DNA replication to gene expression and CRISPR — an accessible yet rigorous exploration of life at the molecular level.',
+    color: '#1a6080',
+    modules: ['DNA Structure & Function', 'Replication & Transcription', 'Protein Synthesis', 'Gene Regulation', 'Mutations & Repair', 'CRISPR & Gene Editing']
+  }
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let activeFilter = 'all';
+let searchQuery = '';
+let savedIds = JSON.parse(localStorage.getItem('edu_saved') || '[]');
+let enrolledIds = JSON.parse(localStorage.getItem('edu_enrolled') || '[]');
+let openModules = {};
+let enrollingCourse = null;
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function savePersist() {
+  localStorage.setItem('edu_saved', JSON.stringify(savedIds));
+  localStorage.setItem('edu_enrolled', JSON.stringify(enrolledIds));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function updateSavedCount() {
+  document.getElementById('saved-count').textContent = savedIds.length;
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function filteredCourses() {
+  return COURSES.filter(c => {
+    const matchCat = activeFilter === 'all' || c.category === activeFilter;
+    const q = searchQuery.toLowerCase();
+    const matchSearch = !q || c.title.toLowerCase().includes(q) || c.instructor.toLowerCase().includes(q) || c.category.includes(q);
+    return matchCat && matchSearch;
+  });
+}
+
+function catColor(cat) {
+  const map = { design: '#fef2ec', technology: '#eef2fc', business: '#eef6f1', science: '#e8f4f8', humanities: '#f8eaea' };
+  const text = { design: '#8a3a04', technology: '#1a3e7a', business: '#2a5238', science: '#0e4060', humanities: '#5a1a1a' };
+  return [map[cat] || '#f5f5f5', text[cat] || '#333'];
+}
+
+function renderCourses() {
+  const courses = filteredCourses();
+  const grid = document.getElementById('course-grid');
+  document.getElementById('count').textContent = courses.length;
+
+  if (!courses.length) {
+    grid.innerHTML = `<div class="no-results"><span>🔍</span><strong>No courses found</strong><p>Try adjusting your filters or search.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = courses.map((c, i) => {
+    const isSaved = savedIds.includes(c.id);
+    const isEnrolled = enrolledIds.includes(c.id);
+    const [bg, fg] = catColor(c.category);
+    const isOpen = !!openModules[c.id];
+    return `
+    <div class="course-card" style="animation-delay:${i * 0.05}s" data-id="${c.id}">
+      <div class="card-banner" style="background:${c.color}"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="category-pill" style="background:${bg};color:${fg}">${c.category}</span>
+          <button class="save-btn ${isSaved ? 'saved' : ''}" onclick="toggleSave(${c.id})" title="${isSaved ? 'Remove from saved' : 'Save course'}">
+            <svg viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+        <div class="card-title">${c.title}</div>
+        <div class="card-instructor">by ${c.instructor}</div>
+        <div class="card-meta">
+          <span><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm.5 5v5.75l4.5 2.67-.75 1.26-5.25-3.13V7z"/></svg>${c.duration}</span>
+          <span><svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h10"/></svg>${c.lessons} lessons</span>
+          <span>★ ${c.rating}</span>
+        </div>
+        <div class="card-desc">${c.desc}</div>
+        <button class="modules-toggle" onclick="toggleModules(${c.id})">
+          <span>📚 ${c.modules.length} Modules</span>
+          <svg class="chevron ${isOpen ? 'open' : ''}" viewBox="0 0 24 24" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="modules-list ${isOpen ? 'open' : ''}">
+          ${c.modules.map((m, idx) => `<div class="module-item"><span class="module-num">${String(idx+1).padStart(2,'0')}</span>${m}</div>`).join('')}
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="price ${c.price === 0 ? 'free' : ''}">${c.price === 0 ? 'Free' : '$' + c.price}</div>
+        <button class="enroll-btn ${isEnrolled ? 'enrolled' : ''}" onclick="openEnroll(${c.id})">
+          ${isEnrolled ? '✓ Enrolled' : 'Enroll Now'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────
+function toggleModules(id) {
+  openModules[id] = !openModules[id];
+  renderCourses();
+}
+
+function toggleSave(id) {
+  if (savedIds.includes(id)) {
+    savedIds = savedIds.filter(x => x !== id);
+    showToast('Removed from saved');
+  } else {
+    savedIds.push(id);
+    showToast('Course saved ♡');
+  }
+  updateSavedCount();
+  savePersist();
+  renderCourses();
+  renderSavedPanel();
+}
+
+// ── ENROLL MODAL ──────────────────────────────────────────────────────────
+function openEnroll(id) {
+  enrollingCourse = COURSES.find(c => c.id === id);
+  const modal = document.getElementById('modal');
+  const content = document.getElementById('modal-content');
+  content.innerHTML = `
+    <h2>Enroll in Course</h2>
+    <p class="modal-sub">You're enrolling in <strong>${enrollingCourse.title}</strong></p>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>First Name</label>
+        <input type="text" id="f-first" placeholder="Jane">
+        <div class="error-msg" id="err-first">Required</div>
+      </div>
+      <div class="form-row">
+        <label>Last Name</label>
+        <input type="text" id="f-last" placeholder="Doe">
+        <div class="error-msg" id="err-last">Required</div>
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Email Address</label>
+      <input type="email" id="f-email" placeholder="jane@example.com">
+      <div class="error-msg" id="err-email">Valid email required</div>
+    </div>
+    <div class="form-row">
+      <label>Experience Level</label>
+      <select id="f-level">
+        <option value="">Select level…</option>
+        <option>Beginner</option>
+        <option>Intermediate</option>
+        <option>Advanced</option>
+      </select>
+      <div class="error-msg" id="err-level">Please select a level</div>
+    </div>
+    <button class="submit-btn" onclick="submitEnroll()">
+      ${enrollingCourse.price === 0 ? 'Enroll for Free' : 'Proceed to Payment — $' + enrollingCourse.price}
+    </button>
+  `;
+  modal.classList.add('show');
+}
+
+function submitEnroll() {
+  const first = document.getElementById('f-first');
+  const last  = document.getElementById('f-last');
+  const email = document.getElementById('f-email');
+  const level = document.getElementById('f-level');
+  let valid = true;
+
+  [['first', first, v => v.trim().length > 0],
+   ['last',  last,  v => v.trim().length > 0],
+   ['email', email, v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)],
+   ['level', level, v => v !== '']
+  ].forEach(([key, el, test]) => {
+    const err = document.getElementById('err-' + key);
+    if (!test(el.value)) {
+      el.classList.add('error');
+      err.classList.add('show');
+      valid = false;
+    } else {
+      el.classList.remove('error');
+      err.classList.remove('show');
+    }
+  });
+
+  if (!valid) return;
+
+  // Mark as enrolled
+  if (!enrolledIds.includes(enrollingCourse.id)) {
+    enrolledIds.push(enrollingCourse.id);
+    savePersist();
+  }
+
+  // Show success
+  document.getElementById('modal-content').innerHTML = `
+    <div class="success-screen">
+      <div class="success-icon">🎉</div>
+      <h2>You're in!</h2>
+      <p>Welcome to <strong>${enrollingCourse.title}</strong>.<br>
+      A confirmation has been sent to <strong>${email.value}</strong>.</p>
+      <button class="submit-btn" onclick="closeModal()">Back to Courses</button>
+    </div>
+  `;
+  renderCourses();
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+// ── SAVED PANEL ───────────────────────────────────────────────────────────
+function renderSavedPanel() {
+  const list = document.getElementById('saved-list');
+  if (!savedIds.length) {
+    list.innerHTML = `<div class="panel-empty"><span>♡</span>No saved courses yet.<br>Click the heart on any course.</div>`;
+    return;
+  }
+  list.innerHTML = savedIds.map(id => {
+    const c = COURSES.find(x => x.id === id);
+    if (!c) return '';
+    return `<div class="saved-item">
+      <div class="saved-item-info">
+        <div class="saved-item-title">${c.title}</div>
+        <div class="saved-item-cat">${c.category} · ${c.price === 0 ? 'Free' : '$' + c.price}</div>
+      </div>
+      <button class="remove-saved" onclick="toggleSave(${c.id})" title="Remove">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ── FILTER & SEARCH ───────────────────────────────────────────────────────
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderCourses();
+  });
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  renderCourses();
+});
+
+// ── MODAL / PANEL CONTROLS ────────────────────────────────────────────────
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+
+document.getElementById('open-saved').addEventListener('click', e => {
+  e.preventDefault();
+  renderSavedPanel();
+  document.getElementById('saved-panel').classList.add('open');
+});
+document.getElementById('close-saved').addEventListener('click', () => {
+  document.getElementById('saved-panel').classList.remove('open');
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+updateSavedCount();
+renderCourses();
+</script>
+</body>
+</html>
